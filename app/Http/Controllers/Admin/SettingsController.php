@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\Setting;
 use App\Models\User;
+use App\Services\MicrosoftGraphService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -180,5 +182,67 @@ By checking the agreement box and submitting this questionnaire, you confirm tha
         $user->delete();
 
         return back()->with('success', 'HR Manager account removed.');
+    }
+
+    /**
+     * Search Microsoft 365 Azure Tenant users via Microsoft Graph.
+     */
+    public function searchAzureUsers(Request $request, MicrosoftGraphService $graphService): JsonResponse
+    {
+        $query = (string) $request->query('query', '');
+        $users = $graphService->searchUsers($query, 12);
+
+        return response()->json([
+            'success' => true,
+            'users' => $users,
+        ]);
+    }
+
+    /**
+     * Create or link a subsidiary HR manager from Microsoft Entra / Azure AD.
+     */
+    public function storeMicrosoftHrManager(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
+            'company_id' => ['required', 'exists:companies,id'],
+            'azure_id' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $email = strtolower($validated['email']);
+
+        $user = User::whereRaw('LOWER(email) = ?', [$email])
+            ->orWhere(function ($q) use ($validated) {
+                if (! empty($validated['azure_id'])) {
+                    $q->where('azure_id', $validated['azure_id']);
+                }
+            })
+            ->first();
+
+        if ($user) {
+            $user->update([
+                'name' => $validated['name'],
+                'company_id' => $validated['company_id'],
+                'azure_id' => $validated['azure_id'] ?? $user->azure_id,
+                'auth_provider' => 'microsoft',
+            ]);
+            $user->assignRole('subsidiary_hr_manager');
+
+            return back()->with('success', "Existing user '{$user->name}' linked as Microsoft HR Manager for {$user->company?->name}.");
+        }
+
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $email,
+            'azure_id' => $validated['azure_id'] ?? null,
+            'auth_provider' => 'microsoft',
+            'company_id' => $validated['company_id'],
+            'password' => null,
+        ]);
+
+        $user->assignRole('subsidiary_hr_manager');
+
+        return back()->with('success', "Microsoft HR Manager '{$user->name}' added successfully.");
     }
 }

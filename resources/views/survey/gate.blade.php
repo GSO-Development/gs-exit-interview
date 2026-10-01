@@ -68,18 +68,25 @@
             background: linear-gradient(90deg, #c9993a, #f0c060);
         }
 
-        .gate-crest {
-            width: 48px;
-            height: 48px;
-            margin: 0 auto 12px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            display: flex;
+        .gate-logo-wrap {
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            color: #f0c060;
-            font-size: 22px;
+            background: #ffffff;
+            padding: 8px 18px;
+            border-radius: 14px;
+            margin: 0 auto 14px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            max-width: 90%;
+        }
+
+        .gate-logo {
+            height: 44px;
+            max-width: 170px;
+            width: auto;
+            object-fit: contain;
+            display: block;
         }
 
         .gate-company {
@@ -257,13 +264,125 @@
             font-size: 11px;
             margin-top: 12px;
         }
+
+        /* ── Mobile Responsive Styles ───────────────────────────────── */
+        @media (max-width: 520px) {
+            body {
+                padding: 16px 12px;
+            }
+
+            .gate-card {
+                border-radius: 16px;
+                box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            }
+
+            .gate-header {
+                padding: 28px 18px 22px;
+            }
+
+            .gate-logo-wrap {
+                padding: 6px 14px;
+                margin-bottom: 12px;
+                border-radius: 12px;
+            }
+
+            .gate-logo {
+                height: 38px;
+                max-width: 140px;
+            }
+
+            .gate-company {
+                font-size: 10px;
+                letter-spacing: 1.5px;
+            }
+
+            .gate-title {
+                font-size: 18px;
+            }
+
+            .gate-subtitle {
+                font-size: 12px;
+            }
+
+            .gate-body {
+                padding: 24px 18px 24px;
+            }
+
+            .recipient-badge {
+                padding: 10px 12px;
+                margin-bottom: 20px;
+                gap: 10px;
+            }
+
+            .avatar-circle {
+                width: 36px;
+                height: 36px;
+                font-size: 13px;
+            }
+
+            .recipient-name {
+                font-size: 13.5px;
+            }
+
+            .recipient-sub {
+                font-size: 11.5px;
+            }
+
+            .passcode-input {
+                font-size: 18px;
+                letter-spacing: 3px;
+                padding: 12px 14px;
+            }
+
+            .passcode-input::placeholder {
+                font-size: 12.5px;
+                letter-spacing: 1.5px;
+            }
+
+            .btn-submit {
+                padding: 13px 18px;
+                font-size: 14px;
+                min-height: 48px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            body {
+                padding: 10px 8px;
+            }
+
+            .gate-header {
+                padding: 22px 14px 18px;
+            }
+
+            .gate-body {
+                padding: 20px 14px 20px;
+            }
+
+            .passcode-input {
+                font-size: 15px;
+                letter-spacing: 2px;
+                padding: 10px 8px;
+            }
+
+            .passcode-input::placeholder {
+                font-size: 11px;
+                letter-spacing: 1px;
+            }
+
+            .btn-submit {
+                font-size: 13.5px;
+            }
+        }
     </style>
 </head>
 <body>
 
 <div class="gate-card">
     <div class="gate-header">
-        <div class="gate-crest">🔒</div>
+        <div class="gate-logo-wrap">
+            <img src="{{ asset('George_Steuart_Group_Logo.png') }}" alt="{{ $survey->company->name ?? 'George Steuart Group' }}" class="gate-logo">
+        </div>
         <div class="gate-company">{{ $survey->company->name ?? 'George Steuart Group' }}</div>
         <h1 class="gate-title">Exit Interview Portal</h1>
         <p class="gate-subtitle">Confidential Access Verification</p>
@@ -311,7 +430,7 @@
 
         <div class="gate-footer">
             <div>
-                Please check the invitation email sent to <strong>{{ $survey->employee_email }}</strong> for your confidential passcode.
+                Please check the separate passcode email sent to <strong>{{ $survey->employee_email }}</strong> for your confidential passcode.
             </div>
             <div class="expiry-notice">
                 <span>⏳</span>

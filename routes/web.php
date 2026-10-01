@@ -5,9 +5,14 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ExitSurveyController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\TemplateController;
+use App\Http\Controllers\Auth\MicrosoftAuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicSurveyController;
 use Illuminate\Support\Facades\Route;
+
+// ── Microsoft OAuth SSO ────────────────────────────────────────────────────────
+Route::get('/auth/microsoft', [MicrosoftAuthController::class, 'redirect'])->name('auth.microsoft');
+Route::get('/auth/microsoft/callback', [MicrosoftAuthController::class, 'callback'])->name('auth.microsoft.callback');
 
 // ── Public: Employee Survey (token-based, password protected) ──────────────────
 Route::prefix('exit-survey')->name('survey.')->group(function () {
@@ -51,6 +56,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
     Route::patch('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::post('/settings/hr-managers', [SettingsController::class, 'storeHrManager'])->name('settings.hr-managers.store');
+    Route::post('/settings/hr-managers/microsoft', [SettingsController::class, 'storeMicrosoftHrManager'])->name('settings.hr-managers.store-microsoft');
+    Route::get('/settings/azure-users/search', [SettingsController::class, 'searchAzureUsers'])->name('settings.azure-users.search');
     Route::patch('/settings/hr-managers/{user}', [SettingsController::class, 'updateHrManager'])->name('settings.hr-managers.update');
     Route::delete('/settings/hr-managers/{user}', [SettingsController::class, 'destroyHrManager'])->name('settings.hr-managers.destroy');
     Route::post('/settings/companies', [SettingsController::class, 'storeCompany'])->name('settings.companies.store');

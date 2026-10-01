@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Mail\ExitSurveyInvitation;
+use App\Mail\ExitSurveyPasscode;
 use App\Models\Company;
 use App\Models\ExitSurvey;
 use App\Models\Setting;
@@ -178,7 +179,7 @@ class ExitSurveyController extends Controller
         return view('admin.surveys.show', ['survey' => $exitSurvey]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): RedirectResponse|JsonResponse
     {
         $user = auth()->user();
         $companyIds = $user->accessibleCompanyIds();
@@ -229,28 +230,41 @@ class ExitSurveyController extends Controller
 
         $mailSent = true;
         try {
+            // 1. Send first email: Survey link invitation
             Mail::to($survey->employee_email)->send(new ExitSurveyInvitation($survey));
+            // 2. Send second email: Confidential access passcode
+            Mail::to($survey->employee_email)->send(new ExitSurveyPasscode($survey));
         } catch (\Throwable $e) {
-            \Log::error('Failed to send exit survey email: '.$e->getMessage());
+            \Log::error('Failed to send exit survey emails: '.$e->getMessage());
             $mailSent = false;
         }
 
         $message = $mailSent
-            ? "Exit survey sent to {$survey->employee_name} successfully."
+            ? "Exit survey link and access passcode sent to {$survey->employee_name} in 2 separate emails successfully."
             : "Exit survey created for {$survey->employee_name}. (Email delivery failed or delayed, link is active).";
+
+        $generatedData = [
+            'survey_url' => route('survey.show', $survey->token),
+            'access_code' => $survey->access_code,
+            'employee_name' => $survey->employee_name,
+            'employee_email' => $survey->employee_email,
+            'company_name' => $survey->company->name ?? 'George Steuart Group',
+            'expires_at' => $survey->expires_at->format('F d, Y'),
+            'validity_days' => $validityDays,
+            'mail_sent' => $mailSent,
+        ];
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'survey_generated' => $generatedData,
+            ]);
+        }
 
         return back()
             ->with('success', $message)
-            ->with('survey_generated', [
-                'survey_url' => route('survey.show', $survey->token),
-                'access_code' => $survey->access_code,
-                'employee_name' => $survey->employee_name,
-                'employee_email' => $survey->employee_email,
-                'company_name' => $survey->company->name ?? 'George Steuart Group',
-                'expires_at' => $survey->expires_at->format('F d, Y'),
-                'validity_days' => $validityDays,
-                'mail_sent' => $mailSent,
-            ]);
+            ->with('survey_generated', $generatedData);
     }
 
     /**
@@ -285,10 +299,11 @@ class ExitSurveyController extends Controller
         $exitSurvey->load('company');
         try {
             Mail::to($exitSurvey->employee_email)->send(new ExitSurveyInvitation($exitSurvey));
+            Mail::to($exitSurvey->employee_email)->send(new ExitSurveyPasscode($exitSurvey));
 
-            return back()->with('success', "Invitation email resent to {$exitSurvey->employee_email}.");
+            return back()->with('success', "Survey link and passcode emails resent to {$exitSurvey->employee_email}.");
         } catch (\Throwable $e) {
-            \Log::error('Failed to resend exit survey email: '.$e->getMessage());
+            \Log::error('Failed to resend exit survey emails: '.$e->getMessage());
 
             return back()->with('warning', 'Survey link is active, but sending email failed: '.$e->getMessage());
         }
@@ -317,10 +332,11 @@ class ExitSurveyController extends Controller
         $exitSurvey->load('company');
         try {
             Mail::to($exitSurvey->employee_email)->send(new ExitSurveyInvitation($exitSurvey));
+            Mail::to($exitSurvey->employee_email)->send(new ExitSurveyPasscode($exitSurvey));
 
-            return back()->with('success', "Token renewed and re-sent to {$exitSurvey->employee_email}.");
+            return back()->with('success', "Token renewed and both emails re-sent to {$exitSurvey->employee_email}.");
         } catch (\Throwable $e) {
-            \Log::error('Failed to send renewed exit survey email: '.$e->getMessage());
+            \Log::error('Failed to send renewed exit survey emails: '.$e->getMessage());
 
             return back()->with('success', 'Token renewed successfully. (Email sending failed or delayed).');
         }
@@ -508,7 +524,7 @@ class ExitSurveyController extends Controller
             return response()->json([
                 'found' => true,
                 'status' => 'submitted',
-                'message' => 'An exit interview was already completed and submitted for this ' . ($type === 'email' ? 'email' : 'EPF / Staff ID'),
+                'message' => 'An exit interview was already completed and submitted for this '.($type === 'email' ? 'email' : 'EPF / Staff ID'),
                 'details' => [
                     'employee_name' => $submitted->employee_name,
                     'company_name' => $submitted->company->name ?? 'N/A',
@@ -530,7 +546,7 @@ class ExitSurveyController extends Controller
             return response()->json([
                 'found' => true,
                 'status' => 'pending',
-                'message' => 'An active invitation token was already sent to this ' . ($type === 'email' ? 'email' : 'EPF / Staff ID'),
+                'message' => 'An active invitation token was already sent to this '.($type === 'email' ? 'email' : 'EPF / Staff ID'),
                 'details' => [
                     'employee_name' => $pending->employee_name,
                     'company_name' => $pending->company->name ?? 'N/A',

@@ -47,22 +47,21 @@
                 </div>
             </div>
 
-            @if($survey->access_code)
-            <div style="background:#fef3c7;border:2px dashed #f59e0b;border-radius:12px;padding:18px 24px;text-align:center;margin-bottom:28px;">
-                <div style="font-size:11px;font-weight:700;color:#92400e;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;">Your Confidential Access Passcode</div>
-                <div style="font-size:26px;font-weight:800;color:#78350f;letter-spacing:3px;font-family:monospace;">{{ $survey->access_code }}</div>
-                <div style="font-size:12px;color:#b45309;margin-top:6px;">Please enter this passcode when opening the survey link below.</div>
+            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:16px 20px;margin-bottom:28px;text-align:center;">
+                <div style="font-size:12px;font-weight:700;color:#166534;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">🔐 Two-Step Security Verification</div>
+                <div style="font-size:13.5px;color:#15803d;line-height:1.5;">
+                    For your confidentiality and data protection, your <strong>Access Passcode</strong> has been dispatched in a separate email to this same address.
+                </div>
             </div>
-            @endif
 
             <a href="{{ route('survey.show', $survey->token) }}" class="btn">
                 📝 Start Exit Interview
             </a>
 
             <p class="notice">
-                🔒 This is a confidential single-use secure survey link. It is valid for <strong>{{ $survey->daysRemaining() }} days</strong> and expires immediately upon submission.<br>
-                Use the confidential passcode above to unlock your survey.<br><br>
-                If you did not expect this email or have questions, please contact <a href="mailto:{{ config('mail.from.address') }}">HR</a>.
+                🔒 This is a secure single-use survey link. It is valid for <strong>{{ $survey->daysRemaining() }} days</strong> and will expire upon submission.<br>
+                Please enter the confidential passcode from the separate email to unlock the questionnaire.<br><br>
+                If you did not expect this email or have questions, please contact <a href="mailto:{{ config('mail.from.address') }}" style="color:#8C0026;">HR</a>.
             </p>
         </div>
         <div class="footer">

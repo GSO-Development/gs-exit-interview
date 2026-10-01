@@ -483,6 +483,7 @@
                 <!-- STEP 2: Review Details & Confirmation -->
                 <div id="surveyModalStep2" style="display:none;">
                     <div class="modal-body" style="padding: 18px 24px 14px;">
+                        <div id="sendSurveyErrorBanner" style="display:none;background:#fee2e2;border:1.5px solid #fca5a5;border-radius:10px;padding:10px 14px;color:#991b1b;font-size:12px;margin-bottom:14px;line-height:1.4;"></div>
                         <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:10px;margin-bottom:14px;">
                             <span style="font-size:18px;">🔍</span>
                             <div style="font-size:12px;color:#1e40af;line-height:1.35;">
@@ -541,7 +542,7 @@
                             <span>←</span>
                             <span>Back &amp; Edit</span>
                         </button>
-                        <button type="submit" class="btn btn-accent" style="display:inline-flex;align-items:center;gap:8px;">
+                        <button type="submit" id="submitSendSurveyBtn" class="btn btn-accent" style="display:inline-flex;align-items:center;gap:8px;">
                             <span>✉️</span>
                             <span>Generate &amp; Send Link</span>
                         </button>
@@ -761,82 +762,133 @@
             }
         });
 
-        @if(isset($errors) && $errors->hasAny(['employee_name', 'employee_email', 'company_id', 'department', 'designation', 'employee_id', 'reporting_manager', 'date_joined', 'last_working_date', 'token_validity_days']))
-            document.addEventListener('DOMContentLoaded', function() {
-                openSendSurveyModal();
-            });
-        @endif
-    </script>
+        // ── AJAX Form Submission for Send Survey ─────────────────────────────
+        document.addEventListener('DOMContentLoaded', function() {
+            var form = document.getElementById('sendSurveyForm');
+            var submitBtn = document.getElementById('submitSendSurveyBtn');
+            var submitErrorBanner = document.getElementById('sendSurveyErrorBanner');
 
-    @if(session('survey_generated'))
-    <!-- Survey Generated Success Modal -->
-    <div id="surveyGeneratedModal" class="modal-overlay" style="display:flex;" onclick="if(event.target===this) this.style.display='none'">
-        <div class="modal" style="max-width: 580px;">
-            <div class="modal-header" style="background:#f0fdf4;border-bottom:1px solid #bbf7d0;">
-                <div class="modal-title" style="color:#166534;display:flex;align-items:center;gap:10px;">
-                    <span style="font-size:22px;">🎉</span>
-                    <span>Exit Survey Link &amp; Passcode Ready</span>
-                </div>
-                <button type="button" class="modal-close" onclick="document.getElementById('surveyGeneratedModal').style.display='none'">✕</button>
-            </div>
-            <div class="modal-body" style="padding:24px 28px;">
-                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px 20px;margin-bottom:20px;">
-                    <div style="font-size:11px;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;">Recipient</div>
-                    <div style="font-size:16px;font-weight:700;color:#8C0026;margin-top:2px;">{{ session('survey_generated.employee_name') }}</div>
-                    <div style="font-size:13px;color:#475569;margin-top:2px;">{{ session('survey_generated.employee_email') }} &bull; {{ session('survey_generated.company_name') }}</div>
-                </div>
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
 
-                <!-- Link Block -->
-                <div style="margin-bottom:20px;">
-                    <label class="form-label" style="display:flex;justify-content:space-between;align-items:center;">
-                        <span>🔗 Survey Access Link</span>
-                        <span style="font-size:11px;color:#059669;font-weight:600;">Valid for {{ session('survey_generated.validity_days') }} days</span>
-                    </label>
-                    <div style="display:flex;gap:8px;">
-                        <input type="text" id="genSurveyLinkInput" class="form-control" readonly value="{{ session('survey_generated.survey_url') }}" style="font-family:monospace;font-size:12.5px;background:#f1f5f9;cursor:text;">
-                        <button type="button" class="btn btn-primary" onclick="copyGenSurveyLink(this)" style="flex-shrink:0;">
-                            📋 Copy Link
-                        </button>
-                    </div>
-                </div>
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.innerHTML = '<span>⏳</span> <span>Generating &amp; Sending Link...</span>';
+                    }
+                    if (submitErrorBanner) {
+                        submitErrorBanner.style.display = 'none';
+                        submitErrorBanner.innerHTML = '';
+                    }
 
-                <!-- Passcode Block -->
-                <div style="margin-bottom:24px;">
-                    <label class="form-label">🔑 Confidential Access Passcode</label>
-                    <div style="display:flex;gap:8px;align-items:center;">
-                        <div style="flex:1;background:#fef3c7;border:1.5px dashed #f59e0b;border-radius:8px;padding:10px 16px;font-family:monospace;font-size:22px;font-weight:800;color:#78350f;letter-spacing:3px;">
-                            {{ session('survey_generated.access_code') }}
-                        </div>
-                        <button type="button" class="btn btn-accent" onclick="copyGenPasscode('{{ session('survey_generated.access_code') }}', this)" style="flex-shrink:0;height:48px;">
-                            📋 Copy Passcode
-                        </button>
-                    </div>
-                    <div style="font-size:11.5px;color:#64748b;margin-top:6px;">
-                        The employee will be required to enter this passcode before opening the exit interview form.
-                    </div>
-                </div>
+                    var formData = new FormData(form);
 
-                @if(session('survey_generated.mail_sent'))
-                <div style="background:#ecfdf5;border:1px solid #a7f3d0;border-radius:8px;padding:12px 16px;font-size:12.5px;color:#065f46;display:flex;align-items:center;gap:10px;">
-                    <span style="font-size:16px;">✉️</span>
-                    <span>An invitation email with this link and passcode was successfully sent to <strong>{{ session('survey_generated.employee_email') }}</strong>.</span>
-                </div>
-                @else
-                <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:12px 16px;font-size:12.5px;color:#92400e;display:flex;align-items:center;gap:10px;">
-                    <span style="font-size:16px;">⚠️</span>
-                    <span>Email delivery could not be verified. You can copy the link and passcode above and share them directly.</span>
-                </div>
-                @endif
-            </div>
-            <div class="modal-footer" style="background:#f8fafc;">
-                <button type="button" class="btn btn-primary" onclick="document.getElementById('surveyGeneratedModal').style.display='none'" style="width:100%;justify-content:center;">
-                    ✓ Done
-                </button>
-            </div>
-        </div>
-    </div>
+                    fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(function(res) {
+                        if (!res.ok) {
+                            return res.json().then(function(errData) {
+                                throw errData;
+                            });
+                        }
+                        return res.json();
+                    })
+                    .then(function(data) {
+                        if (submitBtn) {
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = '<span>✉️</span> <span>Generate &amp; Send Link</span>';
+                        }
 
-    <script>
+                        // Close the create survey modal
+                        closeSendSurveyModal();
+
+                        // Reset input form
+                        form.reset();
+                        backToSurveyStep1();
+
+                        // Display the generated URL & Passcode Popup Modal!
+                        if (data && data.survey_generated) {
+                            showSurveyGeneratedModal(data.survey_generated);
+                        }
+                    })
+                    .catch(function(err) {
+                        if (submitBtn) {
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = '<span>✉️</span> <span>Generate &amp; Send Link</span>';
+                        }
+
+                        var msg = 'Failed to generate survey link. Please check your inputs.';
+                        if (err && err.message) {
+                            msg = err.message;
+                        } else if (err && err.errors) {
+                            var errList = [];
+                            for (var k in err.errors) {
+                                if (err.errors[k]) {
+                                    errList.push(err.errors[k].join(' '));
+                                }
+                            }
+                            if (errList.length > 0) {
+                                msg = errList.join('<br>');
+                            }
+                        }
+
+                        if (submitErrorBanner) {
+                            submitErrorBanner.style.display = 'block';
+                            submitErrorBanner.innerHTML = '⚠️ <strong>Submission Error:</strong><br>' + msg;
+                        } else {
+                            alert('Error: ' + msg);
+                        }
+                    });
+                });
+            }
+        });
+
+        // ── Survey Generated Success Modal Functions ─────────────────────────
+        function showSurveyGeneratedModal(data) {
+            var modal = document.getElementById('surveyGeneratedModal');
+            if (!modal) return;
+
+            document.getElementById('genEmployeeName').textContent = data.employee_name || '—';
+            document.getElementById('genEmployeeDetails').innerHTML = escapeHtml(data.employee_email || '') + ' &bull; ' + escapeHtml(data.company_name || 'George Steuart Group');
+            document.getElementById('genValidityText').textContent = 'Valid for ' + (data.validity_days || 14) + ' days';
+            document.getElementById('genSurveyLinkInput').value = data.survey_url || '';
+            document.getElementById('genAccessCode').textContent = data.access_code || '';
+
+            var mailNotice = document.getElementById('genMailNotice');
+            if (mailNotice) {
+                if (data.mail_sent) {
+                    mailNotice.style.background = '#ecfdf5';
+                    mailNotice.style.border = '1px solid #a7f3d0';
+                    mailNotice.style.color = '#065f46';
+                    mailNotice.innerHTML = '<span style="font-size:16px;">✉️</span> <span>An invitation email with this link and passcode was successfully sent to <strong>' + escapeHtml(data.employee_email) + '</strong>.</span>';
+                } else {
+                    mailNotice.style.background = '#fffbeb';
+                    mailNotice.style.border = '1px solid #fde68a';
+                    mailNotice.style.color = '#92400e';
+                    mailNotice.innerHTML = '<span style="font-size:16px;">⚠️</span> <span>Email delivery could not be verified. You can copy the link and passcode above and share them directly with the candidate.</span>';
+                }
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        function closeSurveyGeneratedModal() {
+            var modal = document.getElementById('surveyGeneratedModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+            // If on surveys index page, reload to reflect new sent item in list
+            if (window.location.pathname.indexOf('/admin/surveys') !== -1) {
+                window.location.reload();
+            }
+        }
+
         function copyGenSurveyLink(btn) {
             var input = document.getElementById('genSurveyLinkInput');
             if (input) {
@@ -853,7 +905,11 @@
             }
         }
 
-        function copyGenPasscode(code, btn) {
+        function copyGenPasscode(btn) {
+            var codeElem = document.getElementById('genAccessCode');
+            var code = codeElem ? codeElem.textContent.trim() : '';
+            if (!code) return;
+
             navigator.clipboard.writeText(code).then(function() {
                 var originalText = btn.innerHTML;
                 btn.innerHTML = '✓ Copied!';
@@ -864,8 +920,88 @@
                 }, 2000);
             });
         }
+
+        @if(isset($errors) && $errors->hasAny(['employee_name', 'employee_email', 'company_id', 'department', 'designation', 'employee_id', 'reporting_manager', 'date_joined', 'last_working_date', 'token_validity_days']))
+            document.addEventListener('DOMContentLoaded', function() {
+                openSendSurveyModal();
+            });
+        @endif
     </script>
-    @endif
+
+    <!-- Survey Generated Success Modal (Always in DOM for instant AJAX popup) -->
+    <div id="surveyGeneratedModal" class="modal-overlay" style="{{ session('survey_generated') ? 'display:flex;' : 'display:none;' }}" onclick="if(event.target===this) closeSurveyGeneratedModal()">
+        <div class="modal" style="max-width: 580px; width: 95%;">
+            <div class="modal-header" style="background:#f0fdf4;border-bottom:1px solid #bbf7d0;">
+                <div class="modal-title" style="color:#166534;display:flex;align-items:center;gap:10px;">
+                    <span style="font-size:22px;">🎉</span>
+                    <span>Exit Survey Link &amp; Passcode Ready</span>
+                </div>
+                <button type="button" class="modal-close" onclick="closeSurveyGeneratedModal()">✕</button>
+            </div>
+            <div class="modal-body" style="padding:24px 28px;">
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px 20px;margin-bottom:20px;">
+                    <div style="font-size:11px;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;">Recipient</div>
+                    <div id="genEmployeeName" style="font-size:16px;font-weight:700;color:#8C0026;margin-top:2px;">{{ session('survey_generated.employee_name') }}</div>
+                    <div id="genEmployeeDetails" style="font-size:13px;color:#475569;margin-top:2px;">
+                        @if(session('survey_generated'))
+                            {{ session('survey_generated.employee_email') }} &bull; {{ session('survey_generated.company_name') }}
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Link Block -->
+                <div style="margin-bottom:20px;">
+                    <label class="form-label" style="display:flex;justify-content:space-between;align-items:center;">
+                        <span>🔗 Survey Access Link</span>
+                        <span id="genValidityText" style="font-size:11px;color:#059669;font-weight:600;">
+                            @if(session('survey_generated'))
+                                Valid for {{ session('survey_generated.validity_days') }} days
+                            @endif
+                        </span>
+                    </label>
+                    <div style="display:flex;gap:8px;">
+                        <input type="text" id="genSurveyLinkInput" class="form-control" readonly value="{{ session('survey_generated.survey_url') }}" style="font-family:monospace;font-size:12.5px;background:#f1f5f9;cursor:text;">
+                        <button type="button" class="btn btn-primary" onclick="copyGenSurveyLink(this)" style="flex-shrink:0;">
+                            📋 Copy Link
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Passcode Block -->
+                <div style="margin-bottom:24px;">
+                    <label class="form-label">🔑 Confidential Access Passcode</label>
+                    <div style="display:flex;gap:8px;align-items:center;">
+                        <div id="genAccessCode" style="flex:1;background:#fef3c7;border:1.5px dashed #f59e0b;border-radius:8px;padding:10px 16px;font-family:monospace;font-size:22px;font-weight:800;color:#78350f;letter-spacing:3px;text-align:center;">
+                            {{ session('survey_generated.access_code') }}
+                        </div>
+                        <button type="button" class="btn btn-accent" id="genPasscodeCopyBtn" onclick="copyGenPasscode(this)" style="flex-shrink:0;height:48px;">
+                            📋 Copy Passcode
+                        </button>
+                    </div>
+                    <div style="font-size:11.5px;color:#64748b;margin-top:6px;">
+                        The employee will be required to enter this passcode before opening the exit interview form.
+                    </div>
+                </div>
+
+                <div id="genMailNotice" style="border-radius:8px;padding:12px 16px;font-size:12.5px;display:flex;align-items:center;gap:10px;{{ session('survey_generated') ? (session('survey_generated.mail_sent') ? 'background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;' : 'background:#fffbeb;border:1px solid #fde68a;color:#92400e;') : '' }}">
+                    @if(session('survey_generated'))
+                        @if(session('survey_generated.mail_sent'))
+                            <span style="font-size:16px;">✉️</span>
+                            <span>An invitation email with this link and passcode was successfully sent to <strong>{{ session('survey_generated.employee_email') }}</strong>.</span>
+                        @else
+                            <span style="font-size:16px;">⚠️</span>
+                            <span>Email delivery could not be verified. You can copy the link and passcode above and share them directly.</span>
+                        @endif
+                    @endif
+                </div>
+            </div>
+            <div class="modal-footer" style="background:#f8fafc;">
+                <button type="button" class="btn btn-primary" onclick="closeSurveyGeneratedModal()" style="width:100%;justify-content:center;">
+                    ✓ Done
+                </button>
+            </div>
+        </div>
+    </div>
 
     @stack('scripts')
 </body>
