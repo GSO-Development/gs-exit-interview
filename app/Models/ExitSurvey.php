@@ -31,6 +31,9 @@ class ExitSurvey extends Model
         'status',
         'submission_source',
         'submitted_at',
+        'declaration_accepted',
+        'declaration_accepted_at',
+        'declaration_accepted_ip',
     ];
 
     protected function casts(): array
@@ -41,6 +44,8 @@ class ExitSurvey extends Model
             'date_joined' => 'date',
             'expires_at' => 'datetime',
             'submitted_at' => 'datetime',
+            'declaration_accepted' => 'boolean',
+            'declaration_accepted_at' => 'datetime',
         ];
     }
 

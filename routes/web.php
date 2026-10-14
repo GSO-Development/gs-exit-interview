@@ -18,6 +18,7 @@ Route::get('/auth/microsoft/callback', [MicrosoftAuthController::class, 'callbac
 Route::prefix('exit-survey')->name('survey.')->group(function () {
     Route::get('/{token}', [PublicSurveyController::class, 'show'])->name('show');
     Route::post('/{token}/auth', [PublicSurveyController::class, 'authenticate'])->name('auth');
+    Route::post('/{token}/declaration', [PublicSurveyController::class, 'acceptDeclaration'])->name('declaration');
     Route::post('/{token}', [PublicSurveyController::class, 'submit'])->name('submit');
     Route::get('/done/success', fn () => view('survey.success'))->name('success');
 });

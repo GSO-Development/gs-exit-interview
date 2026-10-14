@@ -44,6 +44,16 @@
                     <div style="font-size:11px;opacity:0.6;text-transform:uppercase;letter-spacing:1px">Submitted</div>
                     <div style="font-weight:600">{{ $survey->submitted_at?->format('Y-m-d') ?? '—' }}</div>
                 </div>
+                <div>
+                    <div style="font-size:11px;opacity:0.6;text-transform:uppercase;letter-spacing:1px">Declaration</div>
+                    <div style="font-weight:600">
+                        @if($survey->declaration_accepted)
+                            ✔ Accepted · {{ $survey->declaration_accepted_at?->format('Y-m-d H:i') ?? '—' }}
+                        @else
+                            Not accepted
+                        @endif
+                    </div>
+                </div>
                 @if($survey->overallSatisfaction())
                     <div style="margin-left:auto">
                         <div style="font-size:11px;opacity:0.6;text-transform:uppercase;letter-spacing:1px">Overall Satisfaction</div>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\SettingsController;
 use App\Models\ExitResponse;
 use App\Models\ExitSurvey;
 use App\Models\Setting;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -20,17 +21,19 @@ class PublicSurveyController extends Controller
         }
 
         // If survey has an access code and employee hasn't entered it, show passcode gate
-        if ($survey->access_code && ! session('survey_authed_'.$survey->id)) {
+        if (! $this->hasVerifiedPasscode($survey)) {
             return view('survey.gate', ['survey' => $survey]);
+        }
+
+        // The questionnaire is never rendered until the declaration has been accepted
+        if (! $survey->declaration_accepted) {
+            return view('survey.declaration', ['survey' => $survey]);
         }
 
         // Generate HMAC key for secure form submission
         $surveyAuthKey = $survey->access_code
             ? hash_hmac('sha256', $survey->token.':'.$survey->access_code, (string) config('app.key'))
             : '';
-
-        // Clear the session auth flag immediately so that any page reload forces re-entry of the password
-        session()->forget('survey_authed_'.$survey->id);
 
         $termsAndConditions = Setting::get(
             'exit_survey_terms_and_conditions',
@@ -42,6 +45,42 @@ class PublicSurveyController extends Controller
             'surveyAuthKey' => $surveyAuthKey,
             'termsAndConditions' => $termsAndConditions,
         ]);
+    }
+
+    /**
+     * Record the employee's acceptance of the exit interview declaration.
+     *
+     * Re-validates the link, expiry and passcode session exactly as the passcode step does.
+     */
+    public function acceptDeclaration(string $token, Request $request): JsonResponse|RedirectResponse
+    {
+        $survey = ExitSurvey::where('token', $token)->firstOrFail();
+
+        if (! $survey->isAccessible()) {
+            return $this->declarationFailure($request, $token, 'This survey link has expired or is no longer valid.', 403);
+        }
+
+        if (! $this->hasVerifiedPasscode($survey)) {
+            return $this->declarationFailure($request, $token, 'Your session has expired. Please re-enter your access passcode.', 401);
+        }
+
+        if (! $request->boolean('declaration')) {
+            return $this->declarationFailure($request, $token, 'Please confirm that you have read and agree with the declaration.', 422);
+        }
+
+        if (! $survey->declaration_accepted) {
+            $survey->update([
+                'declaration_accepted' => true,
+                'declaration_accepted_at' => now(),
+                'declaration_accepted_ip' => $request->ip(),
+            ]);
+        }
+
+        if ($request->expectsJson()) {
+            return response()->json(['redirect' => route('survey.show', $token)]);
+        }
+
+        return redirect()->route('survey.show', $token);
     }
 
     public function authenticate(string $token, Request $request): RedirectResponse
@@ -90,9 +129,14 @@ class PublicSurveyController extends Controller
             return redirect()->route('survey.show', $token);
         }
 
-        // If form has a valid key, flash session in case Laravel validation redirects back
+        // A valid form key proves passcode knowledge, so keep the session authorised
         if ($hasValidKey) {
-            session()->flash('survey_authed_'.$survey->id, true);
+            session(['survey_authed_'.$survey->id => true]);
+        }
+
+        if (! $survey->declaration_accepted) {
+            return redirect()->route('survey.show', $token)
+                ->withErrors(['declaration' => 'You must accept the declaration before submitting the exit interview.']);
         }
 
         $validated = $request->validate([
@@ -103,11 +147,12 @@ class PublicSurveyController extends Controller
             'overseas_sub_option' => ['nullable', 'required_if:main_reason_to_leave,Going oversees:', 'string', 'max:100'],
             'other_reasons_to_leave' => ['required', 'array', 'min:1'],
             'liked_most_aspects' => ['required', 'array', 'min:1'],
-            'prevented_resignation' => ['required', 'string', 'min:2', 'max:3000'],
+            'enjoyed_most' => ['nullable', 'string', 'max:3000'],
+            'prevented_resignation' => ['nullable', 'string', 'max:3000'],
             'recommend_company' => ['required', 'string', 'in:Yes,No'],
             'open_to_reapply' => ['required', 'string', 'in:Yes,No'],
-            'team_member_signature' => ['required', 'string', 'max:255'],
-            'team_member_signed_date' => ['required', 'date'],
+            'team_member_signature' => ['nullable', 'string', 'max:255'],
+            'team_member_signed_date' => ['nullable', 'date'],
             'terms_agreed' => ['accepted'],
 
             // Optional comments
@@ -187,6 +232,14 @@ class PublicSurveyController extends Controller
             $validated['rating_company_culture'] = $validated['rating_company_culture'] ?? ($ar[19] ?? null);
         }
 
+        // Automatically assign signature from full name and date from current filling date
+        if (empty($validated['team_member_signature'])) {
+            $validated['team_member_signature'] = $survey->employee_name;
+        }
+        if (empty($validated['team_member_signed_date'])) {
+            $validated['team_member_signed_date'] = now()->toDateString();
+        }
+
         ExitResponse::create([
             'exit_survey_id' => $survey->id,
             ...$validated,
@@ -200,5 +253,21 @@ class PublicSurveyController extends Controller
         session()->forget('survey_authed_'.$survey->id);
 
         return redirect()->route('survey.success');
+    }
+
+    /** Whether the current session has passed the passcode step for this survey. */
+    private function hasVerifiedPasscode(ExitSurvey $survey): bool
+    {
+        return ! $survey->access_code || (bool) session('survey_authed_'.$survey->id);
+    }
+
+    /** Build a failed declaration response as JSON or as a redirect with errors. */
+    private function declarationFailure(Request $request, string $token, string $message, int $status): JsonResponse|RedirectResponse
+    {
+        if ($request->expectsJson()) {
+            return response()->json(['message' => $message], $status);
+        }
+
+        return redirect()->route('survey.show', $token)->withErrors(['declaration' => $message]);
     }
 }

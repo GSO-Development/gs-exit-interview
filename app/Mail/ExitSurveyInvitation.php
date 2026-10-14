@@ -17,8 +17,10 @@ class ExitSurveyInvitation extends Mailable
 
     public function envelope(): Envelope
     {
+        $companyName = $this->survey->company->name ?? 'George Steuart Group';
+
         return new Envelope(
-            subject: 'Exit Interview — '.$this->survey->company->name,
+            subject: 'Exit Interview Invitation: Online Exit Interview – Your Feedback Matters ('.$companyName.')',
         );
     }
 

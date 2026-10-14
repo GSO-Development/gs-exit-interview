@@ -95,7 +95,7 @@
             </button>
             <button type="button" class="settings-nav-item" id="tab-btn-terms" onclick="switchSettingsTab('terms')" role="tab" aria-selected="false">
                 <span class="tab-icon">📜</span>
-                <span>Exit Survey Terms &amp; Conditions</span>
+                <span>Employee Exit Policy</span>
             </button>
         </div>
     </div>
@@ -297,14 +297,14 @@
         </div>
     </div>
 
-    <!-- TAB 4: Exit Survey Terms & Conditions -->
+    <!-- TAB 4: Employee Exit Policy -->
     <div id="pane-terms" class="settings-tab-pane">
         <div class="card">
             <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
                 <div>
-                    <span class="card-title" style="font-size:16px;font-weight:700;">📜 Exit Survey Terms &amp; Conditions</span>
+                    <span class="card-title" style="font-size:16px;font-weight:700;">📜 Employee Exit Policy</span>
                     <div style="font-size:12.5px;color:var(--text-muted);margin-top:2px;">
-                        This legal text will be displayed in the modal popup when employees click "Terms and Conditions" before submitting the survey.
+                        This legal text will be displayed in the modal popup when employees click "Employee Exit Policy" before submitting the survey.
                     </div>
                 </div>
             </div>
@@ -313,7 +313,7 @@
                     @csrf @method('PATCH')
                     <div class="form-group">
                         <label class="form-label" for="exit_survey_terms_and_conditions">
-                            Terms &amp; Conditions Content (Text / Clauses) *
+                            Employee Exit Policy Content (Text / Clauses) *
                         </label>
                         <textarea
                             id="exit_survey_terms_and_conditions"
@@ -331,7 +331,7 @@
                         </div>
                     </div>
                     <div style="display:flex;justify-content:flex-end;">
-                        <button type="submit" class="btn btn-primary">💾 Save Terms &amp; Conditions</button>
+                        <button type="submit" class="btn btn-primary">💾 Save Employee Exit Policy</button>
                     </div>
                 </form>
             </div>

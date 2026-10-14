@@ -403,6 +403,12 @@
             gap: 12px 16px;
         }
 
+        .departure-other-reasons-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px 32px;
+        }
+
         .gform-options-grid-3 {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -424,6 +430,10 @@
         @media (max-width: 640px) {
             .gform-options-grid-3 {
                 grid-template-columns: 1fr;
+            }
+            .departure-other-reasons-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
             }
         }
 
@@ -916,57 +926,50 @@
 
 @php
 $areas = [
-    1 => 'Overall Experience Working for the Organization',
-    2 => 'Training and Development Opportunities Received',
-    3 => 'Fairness of Work Distribution / Work Allocation',
-    4 => 'Clarity of Initial Job Role Expectations & Scope',
-    5 => 'Manageability of Day-to-Day Workload & Stress',
-    6 => 'Availability of Necessary Tools, Resources & Tech',
-    7 => 'Base Salary Competitiveness & Internal Equity',
-    8 => 'Total Benefits, Allowances & Welfare Package',
-    9 => 'Timeliness & Quality of Performance Feedback',
-    10 => 'Manager / Supervisor Accessibility & Openness',
-    11 => 'Autonomy & Independence to Execute Your Duties',
-    12 => 'Cooperation, Camaraderie & Support Within Team',
-    13 => 'Inter-Departmental Collaboration & Teamwork',
-    14 => 'Career Growth Pathways & Promotion Transparency',
-    15 => 'Recognition & Appreciation Received for Good Work',
-    16 => 'Trust, Respect & Transparency from Leadership',
-    17 => 'Support for Personal Well-being & Work-Life Balance',
-    18 => 'Physical Working Environment, Comfort & Safety',
-    19 => 'Group Corporate Culture, Values & Inclusivity',
-    20 => 'Overall Morale, Belonging & Team Spirit',
+    1 => 'Welcome and orientation',
+    2 => 'Training to perform the job',
+    3 => 'Opportunities for development and career advancement',
+    4 => 'Type/scope of work that was expected to do',
+    5 => 'Satisfaction with the workload assigned',
+    6 => 'Resources made available to perform the job',
+    7 => 'Basic salary offered',
+    8 => 'Benefits offered',
+    9 => 'Direction and guidance from the immediate supervisor',
+    10 => 'Approachability of the immediate supervisor',
+    11 => 'My ideas and concerns were given a good hearing',
+    12 => 'Teamwork and collaboration within the department',
+    13 => 'Teamwork and collaboration with other departments',
+    14 => 'Open communication between management and the team',
+    15 => 'Rewards and recognition for my work performance',
+    16 => 'Ability to take leave/ off for my personal commitments',
+    17 => 'Having work life balance',
+    18 => 'Feeling respected and valued as a unique person',
+    19 => 'Overall work environment and existence of ‘Api Culture’',
+    20 => 'Approachability and supportiveness of Group HR',
 ];
 
 $otherReasons = [
-    1 => 'Personal well-being/mental health',
-    2 => 'Work-life balance issues/ Demanding work schedule',
-    3 => 'Unfair workload distribution/ Excessive pressure',
-    4 => 'Compensation and benefits not competitive/ Discontentment with salary increments',
-    5 => 'Limited career advancement opportunities/ Lack of promotions',
-    6 => 'Lack of recognition and appreciation for contributions',
-    7 => 'Dissatisfaction with leadership/management/ Poor supervisor relationship',
-    8 => 'Lack of training/professional development',
-    9 => 'Job did not match expectations or skills/ Lack of challenging work',
-    10 => 'Company culture/values misalignment',
-    11 => 'Lack of flexible work arrangements/ Inconvenient working hours',
-    12 => 'Lack of job security',
-    13 => 'Conflict with team members',
-    14 => 'Lack of resources/tools to perform duties effectively',
-    15 => 'Company restructuring or organizational changes',
+    1 => 'Inadequate salary/benefits',
+    2 => 'Limited opportunities for growth and career advancement',
+    3 => 'Inadequate work-life balance',
+    4 => 'Challenging relationship with immediate supervisor',
+    5 => 'Insufficient strategic focus from company management',
+    6 => 'Unfavourable/unsupportive work culture',
 ];
 
 $likedAspects = [
-    1 => 'Friendly work environment',
-    2 => 'Opportunities for learning and professional growth',
-    3 => 'Supportive colleagues and teamwork',
-    4 => 'Supportive leadership/management',
-    5 => 'The nature of work/responsibilities',
-    6 => 'Compensation and benefits package',
-    7 => 'Work-life balance and flexibility',
-    8 => 'Recognition and appreciation for contributions',
-    9 => 'Safety and well-being initiatives',
-    10 => 'Job security and stability',
+    1 => 'Nature of work / job responsibilities',
+    2 => 'Supportive team and colleagues',
+    3 => 'Supervisor’s guidance and leadership',
+    4 => 'Learning and development opportunities',
+    5 => 'Career growth and exposure',
+    6 => 'Compensation and benefits',
+    7 => 'Flexibility / work-life balance',
+    8 => 'Team engagement activities',
+    9 => 'Recognition and appreciation',
+    10 => 'Workplace facilities and environment',
+    11 => 'Company’s reputation and stability',
+    12 => 'Organisational culture and values',
 ];
 @endphp
 
@@ -1003,116 +1006,101 @@ $likedAspects = [
         <!-- 1. Team Member Details (Read-only / Pre-filled from HR Record) -->
         <div class="gform-card">
             <div class="gform-section-title">
-                <span>Team Member Details</span>
-                <span style="font-size: 11px; background: #f1f5f9; color: #475569; font-weight: 700; padding: 4px 10px; border-radius: 8px; border: 1px solid #e2e8f0; display: inline-flex; align-items: center; gap: 4px;">
-                    <span>🔒</span> Verified Official HR Record (Read-only)
+                <span style="display: inline-flex; align-items: center;">
+                    <span style="background: #e11d48; color: #fff; font-size: 12px; font-weight: 800; width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-right: 8px;">1</span>
+                    Team Member Details
                 </span>
             </div>
             <div class="gform-section-desc">
-                These details have been populated from your official employee profile for verification.
+                These details are for office use only.
             </div>
 
             <div class="gform-grid-3">
-                <!-- Name -->
+                <!-- Full Name -->
                 <div class="gform-group">
-                    <label class="gform-label">Name of the Team Member</label>
-                    <input type="text" class="gform-input gform-input-disabled" readonly value="{{ $survey->employee_name }}">
+                    <label class="gform-label">FULL NAME</label>
+                    <input type="text" class="gform-input gform-input-disabled" readonly value="{{ $survey->employee_name }}" placeholder="Enter your full name">
                 </div>
 
-                <!-- Personal Email -->
+                <!-- Team Member No -->
                 <div class="gform-group">
-                    <label class="gform-label">Personal Email Address</label>
-                    <input type="email" class="gform-input gform-input-disabled" readonly value="{{ $survey->employee_email }}">
+                    <label class="gform-label">TEAM MEMBER NO</label>
+                    <input type="text" class="gform-input gform-input-disabled" readonly value="{{ $survey->employee_id ?: '—' }}">
                 </div>
 
-                <!-- Subsidiary -->
+                <!-- Company / Sub-Entity -->
                 <div class="gform-group">
-                    <label class="gform-label">Subsidiary / Company</label>
-                    <input type="text" class="gform-input gform-input-disabled" readonly value="{{ $survey->company->name ?? 'George Steuart Group' }}">
-                </div>
-
-                <!-- Department -->
-                <div class="gform-group">
-                    <label class="gform-label">Department / Division</label>
-                    <input type="text" class="gform-input gform-input-disabled" readonly value="{{ $survey->department }}">
+                    <label class="gform-label">COMPANY / SUB-ENTITY</label>
+                    <input type="text" class="gform-input gform-input-disabled" readonly value="{{ $survey->company->name ?? '—' }}">
                 </div>
 
                 <!-- Designation -->
                 <div class="gform-group">
-                    <label class="gform-label">Designation / Role</label>
-                    <input type="text" class="gform-input gform-input-disabled" readonly value="{{ $survey->designation }}">
+                    <label class="gform-label">DESIGNATION</label>
+                    <input type="text" class="gform-input gform-input-disabled" readonly value="{{ $survey->designation }}" placeholder="Your job title">
                 </div>
 
-                <!-- EPF / Staff ID -->
+                <!-- Division / Section / Department -->
                 <div class="gform-group">
-                    <label class="gform-label">EPF / Staff ID</label>
-                    <input type="text" class="gform-input gform-input-disabled" readonly value="{{ $survey->employee_id ?? 'Not specified' }}">
+                    <label class="gform-label">DIVISION / SECTION / DEPARTMENT</label>
+                    <input type="text" class="gform-input gform-input-disabled" readonly value="{{ $survey->section_division ?: ($survey->department ?: '—') }}" placeholder="e.g. Engineering">
                 </div>
 
-                <!-- Reporting Manager -->
+                <!-- Immediate Manager / Reporting Person -->
                 <div class="gform-group">
-                    <label class="gform-label">Reporting Manager / Supervisor</label>
-                    <input type="text" class="gform-input gform-input-disabled" readonly value="{{ $survey->reporting_manager ?? 'Not specified' }}">
+                    <label class="gform-label">IMMEDIATE MANAGER / REPORTING PERSON</label>
+                    <input type="text" class="gform-input gform-input-disabled" readonly value="{{ $survey->supervisor_name ?: ($survey->reporting_manager ?: '—') }}" placeholder="Name of your manager">
                 </div>
 
-                <!-- Date Joined -->
+                <!-- Date of Joining -->
                 <div class="gform-group">
-                    <label class="gform-label">Date of Joining</label>
-                    <input type="text" class="gform-input gform-input-disabled" readonly value="{{ $survey->date_joined ? $survey->date_joined->format('Y-m-d') : 'Not specified' }}">
+                    <label class="gform-label">DATE OF JOINING</label>
+                    <input type="text" class="gform-input gform-input-disabled" readonly value="{{ $survey->date_joined ? $survey->date_joined->format('Y-m-d') : '—' }}">
                 </div>
 
-                <!-- Last Working Date -->
+                <!-- Date of Resignation -->
                 <div class="gform-group">
-                    <label class="gform-label">Last Working Date</label>
-                    <input type="text" class="gform-input gform-input-disabled" readonly value="{{ $survey->last_working_date ? $survey->last_working_date->format('Y-m-d') : 'Not specified' }}">
+                    <label class="gform-label">DATE OF RESIGNATION</label>
+                    <input type="text" class="gform-input gform-input-disabled" readonly value="{{ $survey->date_of_resignation ? $survey->date_of_resignation->format('Y-m-d') : ($survey->last_working_date ? $survey->last_working_date->format('Y-m-d') : '—') }}">
+                </div>
+
+                <!-- Email -->
+                <div class="gform-group">
+                    <label class="gform-label">EMAIL</label>
+                    <input type="email" class="gform-input gform-input-disabled" readonly value="{{ $survey->employee_email ?: '—' }}">
                 </div>
             </div>
         </div>
 
-        <!-- 2. Rating Matrix Card (20 Areas) -->
+        <!-- 2. Satisfaction Rating -->
         <div class="gform-card rating-matrix-card">
             <div class="gform-section-title">
-                <span>Experience Assessment Matrix (20 Specific Areas) <span class="req-star">*</span></span>
-                <span style="font-size: 11px; background: #fee2e2; color: #be123c; font-weight: 700; padding: 3px 8px; border-radius: 6px;">SECTION 2</span>
+                <span style="display: inline-flex; align-items: center;">
+                    <span style="background: #e11d48; color: #fff; font-size: 12px; font-weight: 800; width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-right: 8px;">2</span>
+                    Satisfaction Rating
+                </span>
             </div>
             <div class="gform-section-desc">
-                Please rate the following areas based on your overall experience with the company:
+                Please complete the following based on your experience for each area according to the 5-point scale below.
             </div>
 
             <div class="rating-table-wrapper">
                 <table class="rating-matrix-table">
                     <thead>
                         <tr>
-                            <th style="width: 44px; text-align: center;">No</th>
-                            <th class="col-area">Area</th>
-                            <th style="width: 120px;">
-                                <div class="col-header-pill" style="background: #dcfce7; color: #15803d;">Highly Satisfied</div>
-                                <div style="font-size: 10.5px; color: #64748b; margin-top: 2px; font-weight: 500;">(5)</div>
-                            </th>
-                            <th style="width: 110px;">
-                                <div class="col-header-pill" style="background: #ccfbf1; color: #0f766e;">Satisfied</div>
-                                <div style="font-size: 10.5px; color: #64748b; margin-top: 2px; font-weight: 500;">(4)</div>
-                            </th>
-                            <th style="width: 105px;">
-                                <div class="col-header-pill" style="background: #fef3c7; color: #b45309;">Average</div>
-                                <div style="font-size: 10.5px; color: #64748b; margin-top: 2px; font-weight: 500;">(3)</div>
-                            </th>
-                            <th style="width: 110px;">
-                                <div class="col-header-pill" style="background: #ffedd5; color: #c2410c;">Dissatisfied</div>
-                                <div style="font-size: 10.5px; color: #64748b; margin-top: 2px; font-weight: 500;">(2)</div>
-                            </th>
-                            <th style="width: 125px;">
-                                <div class="col-header-pill" style="background: #fee2e2; color: #b91c1c;">Highly Dissatisfied</div>
-                                <div style="font-size: 10.5px; color: #64748b; margin-top: 2px; font-weight: 500;">(1)</div>
-                            </th>
+                            <th class="col-area" style="font-size: 11px; font-weight: 700; color: #475569; letter-spacing: 0.5px; text-transform: uppercase; padding: 14px 20px; text-align: left;">SATISFACTION AREA</th>
+                            <th style="width: 105px; font-size: 11px; font-weight: 600; color: #334155; text-align: center; line-height: 1.25; padding: 14px 8px;">Highly<br>Satisfied</th>
+                            <th style="width: 95px; font-size: 11px; font-weight: 600; color: #334155; text-align: center; padding: 14px 8px;">Satisfied</th>
+                            <th style="width: 90px; font-size: 11px; font-weight: 600; color: #334155; text-align: center; padding: 14px 8px;">Average</th>
+                            <th style="width: 95px; font-size: 11px; font-weight: 600; color: #334155; text-align: center; padding: 14px 8px;">Dissatisfied</th>
+                            <th style="width: 105px; font-size: 11px; font-weight: 600; color: #334155; text-align: center; line-height: 1.25; padding: 14px 8px;">Highly<br>Dissatisfied</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($areas as $num => $areaTitle)
                         <tr class="matrix-row">
-                            <td style="text-align: center; font-weight: 700; color: #64748b; font-size: 12px;">{{ $num }}</td>
-                            <td style="padding-left: 20px; font-size: 13.5px; font-weight: 500; color: #1e293b;">
-                                {{ $areaTitle }} <span class="req-star">*</span>
+                            <td style="padding: 13px 20px; font-size: 13px; font-weight: 500; color: #1e293b;">
+                                1.{{ $num }} {{ $areaTitle }}
                             </td>
                             @for($rating = 5; $rating >= 1; $rating--)
                             <td class="matrix-cell-radio">
@@ -1128,224 +1116,216 @@ $likedAspects = [
             </div>
         </div>
 
-        <!-- 3. What is your main reason to leave the company? -->
+        <!-- Departure Reasons (Sections 3 & 4) -->
         <div class="gform-card">
-            <div class="gform-section-title">
-                <span>What is your main reason to leave the company? <span class="req-star">*</span></span>
-                <span style="font-size: 11px; background: #fee2e2; color: #be123c; font-weight: 700; padding: 3px 8px; border-radius: 6px;">SECTION 3</span>
+            <div class="gform-section-title" style="margin-bottom: 4px;">
+                Departure Reasons
             </div>
-            <div class="gform-section-desc">
-                Select the single primary driver that triggered your resignation.
+            <div class="gform-section-desc" style="margin-bottom: 24px;">
+                Help us understand what led to your decision to leave.
             </div>
 
-            <div class="main-reasons-grid">
-                <!-- Option 1 -->
-                <label class="main-reason-card {{ old('main_reason_to_leave') == 'Joining a local company for a better position/ salary' ? 'is-selected' : '' }}">
-                    <div class="reason-card-left">
-                        <span class="reason-badge">01</span>
-                        <span class="reason-title">Joining a local company for a better position / salary</span>
-                    </div>
-                    <input type="radio" name="main_reason_to_leave" value="Joining a local company for a better position/ salary" class="main-radio-native" {{ old('main_reason_to_leave') == 'Joining a local company for a better position/ salary' ? 'checked' : '' }} required>
-                </label>
-
-                <!-- Option 2: Going overseas -->
-                <div class="main-reason-card {{ old('main_reason_to_leave') == 'Going oversees:' ? 'is-selected' : '' }}" id="overseasCard">
-                    <label style="cursor: pointer; display: flex; align-items: center; justify-content: space-between; width: 100%;">
-                        <div class="reason-card-left">
-                            <span class="reason-badge">02</span>
-                            <span class="reason-title">Going oversees:</span>
-                        </div>
-                        <input type="radio" name="main_reason_to_leave" value="Going oversees:" id="overseasRadio" class="main-radio-native" {{ old('main_reason_to_leave') == 'Going oversees:' ? 'checked' : '' }} required>
-                    </label>
-
-                    <div class="overseas-subgroup" id="overseasSubgroup" style="{{ old('main_reason_to_leave') == 'Going oversees:' ? '' : 'display: none;' }}">
-                        <label class="sub-chip-label {{ old('overseas_sub_option') == 'Overseas job' ? 'is-selected' : '' }}">
-                            <input type="radio" name="overseas_sub_option" value="Overseas job" {{ old('overseas_sub_option') == 'Overseas job' ? 'checked' : '' }}>
-                            <span>Overseas job</span>
-                        </label>
-                        <label class="sub-chip-label {{ old('overseas_sub_option') == 'Higher studies' ? 'is-selected' : '' }}">
-                            <input type="radio" name="overseas_sub_option" value="Higher studies" {{ old('overseas_sub_option') == 'Higher studies' ? 'checked' : '' }}>
-                            <span>Higher studies</span>
-                        </label>
-                        <label class="sub-chip-label {{ old('overseas_sub_option') == 'Migration' ? 'is-selected' : '' }}">
-                            <input type="radio" name="overseas_sub_option" value="Migration" {{ old('overseas_sub_option') == 'Migration' ? 'checked' : '' }}>
-                            <span>Migration</span>
-                        </label>
-                    </div>
+            <!-- 3. What is your main reason to leave the company? (Select one) -->
+            <div style="margin-bottom: 24px;">
+                <div style="display: flex; align-items: center; margin-bottom: 16px;">
+                    <span style="background: #e11d48; color: #fff; font-size: 12px; font-weight: 800; width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-right: 8px;">3</span>
+                    <span style="font-size: 14px; font-weight: 700; color: #0f172a;">What is your main reason to leave the company? (Select one)</span>
                 </div>
 
-                <!-- Option 3 -->
-                <label class="main-reason-card {{ old('main_reason_to_leave') == 'Shifting to another industry/career' ? 'is-selected' : '' }}">
-                    <div class="reason-card-left">
-                        <span class="reason-badge">03</span>
-                        <span class="reason-title">Shifting to another industry / career</span>
-                    </div>
-                    <input type="radio" name="main_reason_to_leave" value="Shifting to another industry/career" class="main-radio-native" {{ old('main_reason_to_leave') == 'Shifting to another industry/career' ? 'checked' : '' }} required>
-                </label>
+                <div style="display: flex; flex-direction: column; gap: 14px; padding-left: 2px;">
+                    <!-- Option 1 -->
+                    <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14px; color: #334155;">
+                        <input type="radio" name="main_reason_to_leave" value="Joining a local company for a better position/ salary" class="main-reason-radio" {{ old('main_reason_to_leave') == 'Joining a local company for a better position/ salary' ? 'checked' : '' }} required style="width: 18px; height: 18px; accent-color: #e11d48; cursor: pointer;">
+                        <span>1. Joining a local company for a better position/salary</span>
+                    </label>
 
-                <!-- Option 4 -->
-                <label class="main-reason-card {{ old('main_reason_to_leave') == 'Personal health related reasons' ? 'is-selected' : '' }}">
-                    <div class="reason-card-left">
-                        <span class="reason-badge">04</span>
-                        <span class="reason-title">Personal health related reasons</span>
-                    </div>
-                    <input type="radio" name="main_reason_to_leave" value="Personal health related reasons" class="main-radio-native" {{ old('main_reason_to_leave') == 'Personal health related reasons' ? 'checked' : '' }} required>
-                </label>
+                    <!-- Option 2: Going oversees -->
+                    <div>
+                        <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14px; color: #334155;">
+                            <input type="radio" name="main_reason_to_leave" id="overseasRadio" value="Going oversees:" class="main-reason-radio" {{ old('main_reason_to_leave') == 'Going oversees:' ? 'checked' : '' }} required style="width: 18px; height: 18px; accent-color: #e11d48; cursor: pointer;">
+                            <span>2. Going oversees:</span>
+                        </label>
 
-                <!-- Option 5 -->
-                <label class="main-reason-card {{ old('main_reason_to_leave') == 'Family or personal commitments/reasons' ? 'is-selected' : '' }}">
-                    <div class="reason-card-left">
-                        <span class="reason-badge">05</span>
-                        <span class="reason-title">Family or personal commitments / reasons</span>
+                        <!-- Indented Sub-options -->
+                        <div id="overseasSubgroup" style="margin-left: 30px; padding-left: 16px; border-left: 2px solid #e2e8f0; margin-top: 10px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap;">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13.5px; color: #334155;">
+                                <input type="radio" name="overseas_sub_option" value="Overseas job" {{ old('overseas_sub_option') == 'Overseas job' ? 'checked' : '' }} style="width: 18px; height: 18px; accent-color: #e11d48; cursor: pointer;">
+                                <span>2.1 Overseas job</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13.5px; color: #334155;">
+                                <input type="radio" name="overseas_sub_option" value="Higher studies" {{ old('overseas_sub_option') == 'Higher studies' ? 'checked' : '' }} style="width: 18px; height: 18px; accent-color: #e11d48; cursor: pointer;">
+                                <span>2.2 Higher studies</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13.5px; color: #334155;">
+                                <input type="radio" name="overseas_sub_option" value="Migration" {{ old('overseas_sub_option') == 'Migration' ? 'checked' : '' }} style="width: 18px; height: 18px; accent-color: #e11d48; cursor: pointer;">
+                                <span>2.3 Migration</span>
+                            </label>
+                        </div>
                     </div>
-                    <input type="radio" name="main_reason_to_leave" value="Family or personal commitments/reasons" class="main-radio-native" {{ old('main_reason_to_leave') == 'Family or personal commitments/reasons' ? 'checked' : '' }} required>
-                </label>
 
-                <!-- Option 6 -->
-                <label class="main-reason-card {{ old('main_reason_to_leave') == 'Distance to workplace/ Relocation' ? 'is-selected' : '' }}">
-                    <div class="reason-card-left">
-                        <span class="reason-badge">06</span>
-                        <span class="reason-title">Distance to workplace / Relocation</span>
-                    </div>
-                    <input type="radio" name="main_reason_to_leave" value="Distance to workplace/ Relocation" class="main-radio-native" {{ old('main_reason_to_leave') == 'Distance to workplace/ Relocation' ? 'checked' : '' }} required>
-                </label>
+                    <!-- Option 3 -->
+                    <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14px; color: #334155;">
+                        <input type="radio" name="main_reason_to_leave" value="Shifting to another industry/career" class="main-reason-radio" {{ old('main_reason_to_leave') == 'Shifting to another industry/career' ? 'checked' : '' }} required style="width: 18px; height: 18px; accent-color: #e11d48; cursor: pointer;">
+                        <span>3. Shifting to another industry/career</span>
+                    </label>
+
+                    <!-- Option 4 -->
+                    <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14px; color: #334155;">
+                        <input type="radio" name="main_reason_to_leave" value="Personal health related reasons" class="main-reason-radio" {{ old('main_reason_to_leave') == 'Personal health related reasons' ? 'checked' : '' }} required style="width: 18px; height: 18px; accent-color: #e11d48; cursor: pointer;">
+                        <span>4. Personal health related reasons</span>
+                    </label>
+
+                    <!-- Option 5 -->
+                    <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14px; color: #334155;">
+                        <input type="radio" name="main_reason_to_leave" value="Family or personal commitments/reasons" class="main-reason-radio" {{ old('main_reason_to_leave') == 'Family or personal commitments/reasons' ? 'checked' : '' }} required style="width: 18px; height: 18px; accent-color: #e11d48; cursor: pointer;">
+                        <span>5. Family or personal commitments/reasons</span>
+                    </label>
+
+                    <!-- Option 6 -->
+                    <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14px; color: #334155;">
+                        <input type="radio" name="main_reason_to_leave" value="Distance to workplace/ Relocation" class="main-reason-radio" {{ (old('main_reason_to_leave') == 'Distance to workplace/ Relocation' || old('main_reason_to_leave') == 'Distance to workplace/Relocation') ? 'checked' : '' }} required style="width: 18px; height: 18px; accent-color: #e11d48; cursor: pointer;">
+                        <span>6. Distance to workplace/Relocation</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <hr style="border: none; border-top: 1px solid #f1f5f9; margin: 28px 0;">
+
+            <!-- 4. Any other reasons to leave the company? (Select all that apply) -->
+            <div>
+                <div style="display: flex; align-items: center; margin-bottom: 16px;">
+                    <span style="background: #e11d48; color: #fff; font-size: 12px; font-weight: 800; width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-right: 8px;">4</span>
+                    <span style="font-size: 14px; font-weight: 700; color: #0f172a;">Any other reasons to leave the company? (Select all that apply)</span>
+                </div>
+
+                <div class="departure-other-reasons-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px 32px; padding-left: 2px;">
+                    @foreach($otherReasons as $num => $reason)
+                    <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer; font-size: 13.5px; color: #334155; line-height: 1.4;">
+                        <input type="checkbox" name="other_reasons_to_leave[]" value="{{ $reason }}" {{ is_array(old('other_reasons_to_leave')) && in_array($reason, old('other_reasons_to_leave')) ? 'checked' : '' }} style="width: 18px; height: 18px; accent-color: #e11d48; margin-top: 1px; cursor: pointer; border-radius: 4px;">
+                        <span>{{ $num }}. {{ $reason }}</span>
+                    </label>
+                    @endforeach
+                </div>
             </div>
         </div>
 
-        <!-- 4. Any other reasons to leave the company? (Mandatory, 3 items per row) -->
+        <!-- 5. What did you like the most about your work experience? -->
         <div class="gform-card">
-            <div class="gform-section-title">
-                <span>Any other reasons to leave the company? (Select multiple if applicable) <span class="req-star">*</span></span>
-                <span style="font-size: 11px; background: #fee2e2; color: #be123c; font-weight: 700; padding: 3px 8px; border-radius: 6px;">SECTION 4</span>
+            <div class="gform-section-title" style="margin-bottom: 6px;">
+                <span style="display: inline-flex; align-items: center;">
+                    <span style="background: #e11d48; color: #fff; font-size: 12px; font-weight: 800; width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-right: 8px;">5</span>
+                    What did you like the most about your work experience? (Select all that apply)
+                </span>
             </div>
-            <div class="gform-section-desc">
-                Select all secondary factors that influenced your decision. (At least 1 required)
-            </div>
-
-            <div class="gform-options-grid-3">
-                @foreach($otherReasons as $num => $reason)
-                <label class="gform-option-item {{ is_array(old('other_reasons_to_leave')) && in_array($reason, old('other_reasons_to_leave')) ? 'is-selected' : '' }}">
-                    <input type="checkbox" name="other_reasons_to_leave[]" value="{{ $reason }}" {{ is_array(old('other_reasons_to_leave')) && in_array($reason, old('other_reasons_to_leave')) ? 'checked' : '' }}>
-                    <span>{{ $num }}. {{ $reason }}</span>
-                </label>
-                @endforeach
-            </div>
-        </div>
-
-        <!-- 5. What did you like the most about your work experience? (Mandatory, 2 items per row) -->
-        <div class="gform-card">
-            <div class="gform-section-title">
-                <span>What did you like the most about your work experience? (Select multiple as applicable) <span class="req-star">*</span></span>
-                <span style="font-size: 11px; background: #fee2e2; color: #be123c; font-weight: 700; padding: 3px 8px; border-radius: 6px;">SECTION 5</span>
-            </div>
-            <div class="gform-section-desc">
-                Select the positive aspects that stood out during your tenure with us. (At least 1 required)
+            <div class="gform-section-desc" style="margin-bottom: 20px;">
+                Choose everything that made your time here worthwhile.
             </div>
 
-            <div class="gform-options-grid-2">
+            <hr style="border: none; border-top: 1px solid #f1f5f9; margin: 0 0 20px 0;">
+
+            <div class="departure-other-reasons-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px 32px; padding-left: 2px;">
                 @foreach($likedAspects as $num => $aspect)
-                <label class="gform-option-item {{ is_array(old('liked_most_aspects')) && in_array($aspect, old('liked_most_aspects')) ? 'is-selected' : '' }}">
-                    <input type="checkbox" name="liked_most_aspects[]" value="{{ $aspect }}" {{ is_array(old('liked_most_aspects')) && in_array($aspect, old('liked_most_aspects')) ? 'checked' : '' }}>
+                <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer; font-size: 13.5px; color: #334155; line-height: 1.4;">
+                    <input type="checkbox" name="liked_most_aspects[]" value="{{ $aspect }}" {{ is_array(old('liked_most_aspects')) && in_array($aspect, old('liked_most_aspects')) ? 'checked' : '' }} style="width: 18px; height: 18px; accent-color: #e11d48; margin-top: 1px; cursor: pointer; border-radius: 4px;">
                     <span>{{ $num }}. {{ $aspect }}</span>
                 </label>
                 @endforeach
             </div>
         </div>
 
-        <!-- 6. What could the company have done to prevent your resignation? (Mandatory) -->
+        <!-- 6. Open Reflections & Recommendations -->
         <div class="gform-card">
-            <div class="gform-section-title">
-                <span>What could the company have done to prevent your resignation? <span class="req-star">*</span></span>
-                <span style="font-size: 11px; background: #fee2e2; color: #be123c; font-weight: 700; padding: 3px 8px; border-radius: 6px;">SECTION 6</span>
+            <div class="gform-section-title" style="margin-bottom: 6px;">
+                <span style="display: inline-flex; align-items: center;">
+                    <span style="background: #e11d48; color: #fff; font-size: 12px; font-weight: 800; width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-right: 8px;">6</span>
+                    Open Reflections & Recommendations
+                </span>
             </div>
-            <div class="gform-section-desc">
-                Please share any retention measures or circumstances that might have encouraged you to stay.
+            <div class="gform-section-desc" style="margin-bottom: 24px;">
+                We value your honest feedback. Share as much or as little as you'd like.
             </div>
 
-            <textarea name="prevented_resignation" class="gform-textarea" placeholder="Your comments..." required>{{ old('prevented_resignation') }}</textarea>
+            <!-- Question 1: Enjoyed most -->
+            <div style="margin-bottom: 22px;">
+                <label style="display: block; font-size: 13.5px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">
+                    In your own words, what did you enjoy most about working here?
+                </label>
+                <textarea name="enjoyed_most" class="gform-textarea" placeholder="Share what you valued about your time here..." style="min-height: 90px;">{{ old('enjoyed_most') }}</textarea>
+            </div>
+
+            <!-- Question 2: Prevented resignation -->
+            <div style="margin-bottom: 22px;">
+                <label style="display: block; font-size: 13.5px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">
+                    What would have prevented your resignation?
+                </label>
+                <textarea name="prevented_resignation" class="gform-textarea" placeholder="What could the company have done differently to keep you?" style="min-height: 90px;">{{ old('prevented_resignation') }}</textarea>
+            </div>
+
+            <!-- Questions 3 & 4: Recommend company & Return for future opportunities -->
+            <div class="departure-other-reasons-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 22px;">
+                <!-- Recommend company -->
+                <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px 20px; background: #fff;">
+                    <div style="font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 14px; line-height: 1.4;">
+                        Would you recommend this company as a good place to work to others?
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <label class="yn-pill-option" style="flex: 1; border: 1.5px solid #e2e8f0; border-radius: 8px; padding: 9px 16px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; background: #fff; transition: all 0.15s;">
+                            <input type="radio" name="recommend_company" value="Yes" {{ old('recommend_company') == 'Yes' ? 'checked' : '' }} required style="width: 17px; height: 17px; accent-color: #e11d48; cursor: pointer;">
+                            <span style="font-size: 13.5px; font-weight: 600; color: #1e293b;">Yes</span>
+                        </label>
+                        <label class="yn-pill-option" style="flex: 1; border: 1.5px solid #e2e8f0; border-radius: 8px; padding: 9px 16px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; background: #fff; transition: all 0.15s;">
+                            <input type="radio" name="recommend_company" value="No" {{ old('recommend_company') == 'No' ? 'checked' : '' }} required style="width: 17px; height: 17px; accent-color: #e11d48; cursor: pointer;">
+                            <span style="font-size: 13.5px; font-weight: 600; color: #1e293b;">No</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Return / Reapply -->
+                <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px 20px; background: #fff;">
+                    <div style="font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 14px; line-height: 1.4;">
+                        Would you be open to return for future opportunities with the company?
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <label class="yn-pill-option" style="flex: 1; border: 1.5px solid #e2e8f0; border-radius: 8px; padding: 9px 16px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; background: #fff; transition: all 0.15s;">
+                            <input type="radio" name="open_to_reapply" value="Yes" {{ old('open_to_reapply') == 'Yes' ? 'checked' : '' }} required style="width: 17px; height: 17px; accent-color: #e11d48; cursor: pointer;">
+                            <span style="font-size: 13.5px; font-weight: 600; color: #1e293b;">Yes</span>
+                        </label>
+                        <label class="yn-pill-option" style="flex: 1; border: 1.5px solid #e2e8f0; border-radius: 8px; padding: 9px 16px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; background: #fff; transition: all 0.15s;">
+                            <input type="radio" name="open_to_reapply" value="No" {{ old('open_to_reapply') == 'No' ? 'checked' : '' }} required style="width: 17px; height: 17px; accent-color: #e11d48; cursor: pointer;">
+                            <span style="font-size: 13.5px; font-weight: 600; color: #1e293b;">No</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 5: Other comments -->
+            <div>
+                <label style="display: block; font-size: 13.5px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">
+                    Any other comments you would like to share?
+                </label>
+                <textarea name="other_comments" class="gform-textarea" placeholder="Anything else we should know..." style="min-height: 90px;">{{ old('other_comments') }}</textarea>
+            </div>
         </div>
 
-        <!-- 7 & 8. Future Engagement Choices (Questions 7 & 8 side-by-side in a Single Row) -->
-        <div class="choice-cards-row">
-            <!-- 7. Would you be open to reapply for future opportunities? -->
-            <div class="gform-card single-line-choice-card">
-                <div class="question-text">
-                    Would you be open to reapply for future opportunities with our company? <span class="req-star">*</span>
-                </div>
-                <div class="single-line-options-wrap">
-                    <label class="choice-pill-label">
-                        <input type="radio" name="open_to_reapply" value="Yes" {{ old('open_to_reapply') == 'Yes' ? 'checked' : '' }} required>
-                        <span>Yes</span>
-                    </label>
-                    <label class="choice-pill-label">
-                        <input type="radio" name="open_to_reapply" value="No" {{ old('open_to_reapply') == 'No' ? 'checked' : '' }} required>
-                        <span>No</span>
-                    </label>
-                </div>
-            </div>
+        <!-- Declaration & Submit -->
+        <input type="hidden" name="team_member_signature" value="{{ $survey->employee_name }}">
+        <input type="hidden" name="team_member_signed_date" value="{{ date('Y-m-d') }}">
 
-            <!-- 8. Would you recommend our company as a potential employer to others? -->
-            <div class="gform-card single-line-choice-card">
-                <div class="question-text">
-                    Would you recommend our company as a potential employer to others? <span class="req-star">*</span>
-                </div>
-                <div class="single-line-options-wrap">
-                    <label class="choice-pill-label">
-                        <input type="radio" name="recommend_company" value="Yes" {{ old('recommend_company') == 'Yes' ? 'checked' : '' }} required>
-                        <span>Yes</span>
-                    </label>
-                    <label class="choice-pill-label">
-                        <input type="radio" name="recommend_company" value="No" {{ old('recommend_company') == 'No' ? 'checked' : '' }} required>
-                        <span>No</span>
-                    </label>
-                </div>
-            </div>
-        </div>
-
-        <!-- 9. Any other comments? (Optional) -->
         <div class="gform-card">
-            <div class="gform-section-title">
-                <span>Any other comments? <span style="font-size: 11px; font-weight: 500; color: #64748b; background: #f1f5f9; padding: 2px 8px; border-radius: 6px;">Optional</span></span>
-                <span style="font-size: 11px; background: #fee2e2; color: #be123c; font-weight: 700; padding: 3px 8px; border-radius: 6px;">SECTION 9</span>
+            <div class="gform-section-title" style="margin-bottom: 4px;">
+                Declaration & Submit
             </div>
-            <div class="gform-section-desc">
-                Feel free to share any additional suggestions, feedback, or reflections.
-            </div>
-
-            <textarea name="other_comments" class="gform-textarea" placeholder="Your comments (optional)...">{{ old('other_comments') }}</textarea>
-        </div>
-
-        <!-- 10. Signature Card -->
-        <div class="gform-card">
-            <div class="gform-section-title">
-                <span>Declaration & Digital Signature <span class="req-star">*</span></span>
-                <span style="font-size: 11px; background: #fee2e2; color: #be123c; font-weight: 700; padding: 3px 8px; border-radius: 6px;">FINAL</span>
-            </div>
-            <div class="gform-section-desc">
-                By entering your name below, you confirm that the feedback provided represents your honest evaluation.
+            <div class="gform-section-desc" style="margin-bottom: 24px;">
+                Confirm your details before submitting.
             </div>
 
-            <div class="gform-grid-2">
-                <div class="gform-group">
-                    <label class="gform-label">Digital Signature (Type your full name) <span class="req-star">*</span></label>
-                    <input type="text" name="team_member_signature" class="gform-input" placeholder="e.g. {{ $survey->employee_name }}" required value="{{ old('team_member_signature', $survey->employee_name) }}">
-                </div>
-                <div class="gform-group">
-                    <label class="gform-label">Date <span class="req-star">*</span></label>
-                    <input type="date" name="team_member_signed_date" class="gform-input" required value="{{ old('team_member_signed_date', date('Y-m-d')) }}">
-                </div>
-            </div>
-        </div>
+            <hr style="border: none; border-top: 1px solid #f1f5f9; margin: 0 0 20px 0;">
 
-        <!-- Terms and Conditions Card -->
-        <div class="gform-card terms-card">
-            <label class="terms-checkbox-wrap" for="termsAgreed">
-                <input type="checkbox" name="terms_agreed" id="termsAgreed" value="1" required class="terms-checkbox">
-                <span class="terms-text">
-                    I confirm that the information provided in this exit survey is accurate, truthful, and voluntary. 
-                    I have read, understood and agree to the 
-                    <a href="javascript:void(0)" id="openTermsModalBtn" class="terms-modal-trigger">Terms and Conditions</a> 
-                    <span class="req-star">*</span>
+            <label class="terms-checkbox-wrap" for="termsAgreed" style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer;">
+                <input type="checkbox" name="terms_agreed" id="termsAgreed" value="1" required class="terms-checkbox" {{ old('terms_agreed', $survey->declaration_accepted ? '1' : '') ? 'checked' : '' }} style="width: 18px; height: 18px; accent-color: #e11d48; margin-top: 2px; cursor: pointer; border-radius: 4px;">
+                <span class="terms-text" style="font-size: 13.5px; color: #334155; line-height: 1.5;">
+                    I hereby confirm that all details provided are true and accurate, and I agree to the <a href="javascript:void(0)" id="openTermsModalBtn" style="color: inherit; text-decoration: underline;">Employee Exit Policy</a>.
                 </span>
             </label>
         </div>
@@ -1357,7 +1337,7 @@ $likedAspects = [
                 <span>➔</span>
             </button>
             <div id="submitValidationNotice" class="submit-validation-notice">
-                ⏳ Please complete all mandatory sections (*) and accept the Terms & Conditions to enable submission.
+                ⏳ Please complete all mandatory sections (*) and accept the Employee Exit Policy to enable submission.
             </div>
             <div style="text-align: center; font-size: 12px; color: #94a3b8;">
                 🔒 Your response will be securely stored and your access link will be permanently closed.
@@ -1373,7 +1353,7 @@ $likedAspects = [
             <div style="display: flex; align-items: center; gap: 10px;">
                 <span style="font-size: 22px;">📜</span>
                 <div>
-                    <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin: 0;">Exit Interview Terms & Conditions</h3>
+                    <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin: 0;">Employee Exit Policy</h3>
                     <div style="font-size: 12px; color: #64748b;">George Steuart Group Corporate Offboarding Policy</div>
                 </div>
             </div>
@@ -1384,7 +1364,7 @@ $likedAspects = [
         </div>
         <div class="modal-footer">
             <button type="button" class="btn-terms-accept" id="acceptTermsBtn">
-                ✓ I Read & Accept Terms
+                ✓ I Read & Accept Employee Exit Policy
             </button>
             <button type="button" class="btn-terms-cancel" id="cancelTermsBtn">
                 Close
@@ -1452,16 +1432,10 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Show/hide overseas sub-options based on selection
+    // Keep overseas sub-options visible matching questionnaire design
     function syncOverseasVisibility() {
-        if (!overseasRadio || !overseasSubgroup) return;
-        if (overseasRadio.checked) {
-            overseasSubgroup.style.display = 'flex';
-            if (overseasCard) overseasCard.classList.add('is-selected');
-        } else {
-            overseasSubgroup.style.display = 'none';
-            if (overseasCard) overseasCard.classList.remove('is-selected');
-        }
+        if (!overseasSubgroup) return;
+        overseasSubgroup.style.display = 'flex';
     }
 
     // Sync active classes on cards/pills
@@ -1510,7 +1484,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         if (ratedCount < 20) {
             isValid = false;
-            missing.push(`Assessment Ratings (${ratedCount}/20)`);
+            missing.push(`Experience Assessment Matrix (${ratedCount}/20)`);
         }
 
         // 2. Main Reason
@@ -1540,48 +1514,27 @@ document.addEventListener('DOMContentLoaded', function () {
             missing.push('Liked Aspects');
         }
 
-        // 5. Prevented resignation (textarea)
-        const prevented = form.querySelector('textarea[name="prevented_resignation"]');
-        if (!prevented || !prevented.value.trim()) {
-            isValid = false;
-            missing.push('Retention Comments');
-        }
-
-        // 6. Open to reapply
+        // 5. Open to reapply
         const reapply = form.querySelector('input[name="open_to_reapply"]:checked');
         if (!reapply) {
             isValid = false;
             missing.push('Reapply (Yes/No)');
         }
 
-        // 7. Recommend company
+        // 6. Recommend company
         const recommend = form.querySelector('input[name="recommend_company"]:checked');
         if (!recommend) {
             isValid = false;
             missing.push('Recommend (Yes/No)');
         }
 
-        // 8. Signature
-        const signature = form.querySelector('input[name="team_member_signature"]');
-        if (!signature || !signature.value.trim()) {
-            isValid = false;
-            missing.push('Signature');
-        }
-
-        // 9. Signed Date
-        const signDate = form.querySelector('input[name="team_member_signed_date"]');
-        if (!signDate || !signDate.value.trim()) {
-            isValid = false;
-            missing.push('Date');
-        }
-
-        // 10. Terms agreed
+        // 7. Terms agreed
         if (!termsCheckbox || !termsCheckbox.checked) {
             isValid = false;
-            missing.push('Terms & Conditions Acceptance');
+            missing.push('Employee Exit Policy Acceptance');
         }
 
-        // Note: other_comments is strictly optional!
+        // Note: enjoyed_most, prevented_resignation, and other_comments are open reflections ("Share as much or as little as you'd like")
 
         if (submitBtn) {
             submitBtn.disabled = !isValid;
@@ -1593,7 +1546,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 notice.innerHTML = '✓ All mandatory fields completed. You can now submit your survey.';
             } else {
                 notice.className = 'submit-validation-notice';
-                notice.innerHTML = `⏳ Incomplete mandatory fields: <strong>${missing.slice(0, 3).join(', ')}${missing.length > 3 ? ' +' + (missing.length - 3) + ' more' : ''}</strong>`;
+                notice.innerHTML = `⏳ Incomplete sections detected: <strong>${missing.slice(0, 3).join(', ')}${missing.length > 3 ? ' +' + (missing.length - 3) + ' more' : ''}</strong>`;
             }
         }
 
@@ -1609,6 +1562,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 overseas_sub_option: form.querySelector('input[name="overseas_sub_option"]:checked')?.value || '',
                 other_reasons_to_leave: [],
                 liked_most_aspects: [],
+                enjoyed_most: form.querySelector('textarea[name="enjoyed_most"]')?.value || '',
                 prevented_resignation: form.querySelector('textarea[name="prevented_resignation"]')?.value || '',
                 open_to_reapply: form.querySelector('input[name="open_to_reapply"]:checked')?.value || '',
                 recommend_company: form.querySelector('input[name="recommend_company"]:checked')?.value || '',
@@ -1701,6 +1655,10 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // Restore text fields
+            if (draft.enjoyed_most) {
+                const el = form.querySelector('textarea[name="enjoyed_most"]');
+                if (el && !el.value) el.value = draft.enjoyed_most;
+            }
             if (draft.prevented_resignation) {
                 const el = form.querySelector('textarea[name="prevented_resignation"]');
                 if (el && !el.value) el.value = draft.prevented_resignation;
@@ -1718,9 +1676,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (el && !el.value) el.value = draft.team_member_signed_date;
             }
 
-            // Restore terms agreed
-            if (draft.terms_agreed && termsCheckbox) {
-                termsCheckbox.checked = true;
+            // Restore terms agreed: Auto-selected when declaration was accepted
+            const declarationAccepted = {{ $survey->declaration_accepted ? 'true' : 'false' }};
+            if (termsCheckbox) {
+                if (declarationAccepted) {
+                    termsCheckbox.checked = true;
+                } else if (draft && draft.terms_agreed !== undefined) {
+                    termsCheckbox.checked = !!draft.terms_agreed;
+                }
             }
 
             syncCardClasses();
@@ -1730,7 +1693,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Selecting sub-option auto-selects Option 2 ("Going oversees:")
-    document.querySelectorAll('.sub-chip-label input[type="radio"]').forEach(subRadio => {
+    document.querySelectorAll('input[name="overseas_sub_option"]').forEach(subRadio => {
         subRadio.addEventListener('change', function () {
             if (overseasRadio) {
                 overseasRadio.checked = true;
@@ -1738,6 +1701,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 validateForm();
                 saveDraft();
             }
+        });
+    });
+
+    // Uncheck sub-option when another main reason is selected
+    document.querySelectorAll('input[name="main_reason_to_leave"]').forEach(radio => {
+        radio.addEventListener('change', function () {
+            if (this.value !== 'Going oversees:') {
+                document.querySelectorAll('input[name="overseas_sub_option"]').forEach(sub => sub.checked = false);
+            }
+            syncCardClasses();
+            validateForm();
+            saveDraft();
         });
     });
 

@@ -301,9 +301,9 @@
 
 @php
     $response = $survey->response;
-    $ratings = (array) ($response->area_ratings ?? []);
-    $otherReasonsSaved = (array) ($response->other_reasons_to_leave ?? $response->resignation_factors ?? []);
-    $likedMostSaved = (array) ($response->liked_most_aspects ?? []);
+    $ratings = (array) ($response?->area_ratings ?? []);
+    $otherReasonsSaved = (array) ($response?->other_reasons_to_leave ?? $response?->resignation_factors ?? []);
+    $likedMostSaved = (array) ($response?->liked_most_aspects ?? []);
 
     $formFilledDate = $survey->submitted_at ?? $response?->team_member_signed_date ?? $survey->created_at ?? now();
     $issuedOnFormatted = $formFilledDate->format('j') . '<sup>' . $formFilledDate->format('S') . '</sup> ' . $formFilledDate->format('M Y');
@@ -383,8 +383,8 @@
     $logoPath = public_path('George_Steuart_Group_Logo.png');
     $logoBase64 = file_exists($logoPath) ? base64_encode(file_get_contents($logoPath)) : '';
 
-    $selectedMain = $response->main_reason_to_leave ?? $response->primary_resignation_reason ?? '';
-    $overseasSub = $response->overseas_sub_option ?? '';
+    $selectedMain = $response?->main_reason_to_leave ?? $response?->primary_resignation_reason ?? '';
+    $overseasSub = $response?->overseas_sub_option ?? '';
 
     $isOpt1 = (strcasecmp(trim($selectedMain), trim($mainReasons[1])) === 0);
     $isOpt2 = (str_contains(strtolower($mainReasons[2]), 'oversees') && str_contains(strtolower($selectedMain), 'oversea')) ||
@@ -405,8 +405,12 @@
 <table class="header-box">
     <tr>
         <td class="header-logo-cell">
-            @if($logoBase64)
+            @if($logoBase64 && extension_loaded('gd'))
                 <img src="data:image/png;base64,{{ $logoBase64 }}" class="header-logo-img" alt="Logo">
+            @else
+                <div style="font-size: 10pt; font-weight: bold; color: #8C0026; line-height: 1.15; text-align: center; padding: 2px;">
+                    GEORGE STEUART<br><span style="font-size: 7pt; color: #555555; font-weight: normal; letter-spacing: 1px;">GROUP</span>
+                </div>
             @endif
         </td>
         <td class="header-title-cell">
@@ -532,8 +536,12 @@
 <table class="header-box">
     <tr>
         <td class="header-logo-cell">
-            @if($logoBase64)
+            @if($logoBase64 && extension_loaded('gd'))
                 <img src="data:image/png;base64,{{ $logoBase64 }}" class="header-logo-img" alt="Logo">
+            @else
+                <div style="font-size: 10pt; font-weight: bold; color: #8C0026; line-height: 1.15; text-align: center; padding: 2px;">
+                    GEORGE STEUART<br><span style="font-size: 7pt; color: #555555; font-weight: normal; letter-spacing: 1px;">GROUP</span>
+                </div>
             @endif
         </td>
         <td class="header-title-cell">
@@ -593,19 +601,19 @@
 <!-- Section 5 -->
 <div class="text-q-label">5. &nbsp;In your own words, what did you enjoy most about working here?</div>
 <div class="text-q-line">
-    {{ $response->enjoyed_most ?? '' }}
+    {{ $response?->enjoyed_most ?? '' }}
 </div>
 
 <!-- Section 6 -->
 <div class="text-q-label">6. &nbsp;What would have prevented your resignation:</div>
 <div class="text-q-line">
-    {{ $response->prevented_resignation ?? $response->resignation_elaboration ?? '' }}
+    {{ $response?->prevented_resignation ?? $response?->resignation_elaboration ?? '' }}
 </div>
 
 <!-- Section 7 & 8 -->
 @php
-    $recVal = strtolower((string)($response->recommend_company ?? $response->would_recommend ?? ''));
-    $reapVal = strtolower((string)($response->open_to_reapply ?? $response->would_return ?? ''));
+    $recVal = strtolower((string)($response?->recommend_company ?? $response?->would_recommend ?? ''));
+    $reapVal = strtolower((string)($response?->open_to_reapply ?? $response?->would_return ?? ''));
 @endphp
 
 <table class="yes-no-row">
@@ -634,7 +642,7 @@
 <!-- Section 9 -->
 <div class="text-q-label">9. &nbsp;Any other comments:</div>
 <div class="text-q-line">
-    {{ $response->other_comments ?? $response->improvement_suggestions ?? '' }}
+    {{ $response?->other_comments ?? $response?->improvement_suggestions ?? '' }}
 </div>
 
 <!-- Signatures -->
@@ -645,14 +653,14 @@
             <!-- System Generated Digital Stamp / Seal -->
             <div class="digital-seal-badge">
                 <div class="digital-seal-title">★ SYSTEM VERIFIED &amp; CONFIRMED ★</div>
-                <div class="digital-seal-name">{{ strtoupper($response->team_member_signature ?? $survey->employee_name) }}</div>
+                <div class="digital-seal-name">{{ strtoupper($response?->team_member_signature ?? $survey->employee_name) }}</div>
                 <div class="digital-seal-sub">SIGNED VIA GEORGE STEUART HR EXIT PORTAL</div>
             </div>
             <div class="sig-caption" style="margin-top: 2px;">Signature</div>
         </td>
         <td style="width: 34%; text-align: center;">
             <div style="font-weight: bold; font-size: 8pt; border-bottom: 1px solid #000000; padding-bottom: 2px; margin: 0 auto; width: 85%;">
-                {{ $response->team_member_signed_date ? $response->team_member_signed_date->format('Y-m-d') : ($survey->submitted_at ? $survey->submitted_at->format('Y-m-d') : '') }}
+                {{ $response?->team_member_signed_date ? $response->team_member_signed_date->format('Y-m-d') : ($survey->submitted_at ? $survey->submitted_at->format('Y-m-d') : '') }}
             </div>
             <div class="sig-caption" style="margin-top: 2px;">Date</div>
         </td>

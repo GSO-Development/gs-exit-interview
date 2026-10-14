@@ -67,6 +67,7 @@
                         <th>Department</th>
                         <th>Overall Rating</th>
                         <th>Submitted</th>
+                        <th>Declaration</th>
                         <th style="text-align:right;">Actions</th>
                     </tr>
                 </thead>
@@ -88,6 +89,9 @@
                                 'date_of_resignation' => $survey->date_of_resignation?->format('Y-m-d') ?? $survey->last_working_date?->format('Y-m-d') ?? '—',
                                 'tenure' => $survey->tenureYears() ?? '—',
                                 'submitted_at' => $survey->submitted_at?->format('Y-m-d H:i') ?? '—',
+                                'declaration' => $survey->declaration_accepted
+                                    ? 'Accepted · '.($survey->declaration_accepted_at?->format('Y-m-d H:i') ?? '—')
+                                    : 'Not accepted',
                                 'is_system' => false,
                                 'overall_satisfaction' => $survey->overallSatisfaction(),
                                 'pdf_url' => route('admin.surveys.pdf', $survey),
@@ -136,6 +140,14 @@
                                 {{ $survey->submitted_at?->format('Y-m-d') }}<br>
                                 <span style="font-size:11px">{{ $survey->submitted_at?->diffForHumans() }}</span>
                             </td>
+                            <td style="font-size:12px;color:var(--text-muted)">
+                                @if($survey->declaration_accepted)
+                                    <span class="badge badge-success">✔ Accepted</span><br>
+                                    <span style="font-size:11px">{{ $survey->declaration_accepted_at?->format('Y-m-d H:i') }}</span>
+                                @else
+                                    <span class="badge badge-muted">Not accepted</span>
+                                @endif
+                            </td>
                             <td style="text-align:right;">
                                 <div style="display:inline-flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;">
                                     <button type="button" class="btn btn-ghost btn-xs"
@@ -149,7 +161,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" style="text-align:center;color:var(--text-muted);padding:50px">
+                            <td colspan="8" style="text-align:center;color:var(--text-muted);padding:50px">
                                 No online completed submissions found.
                             </td>
                         </tr>
@@ -198,6 +210,9 @@
                                 'date_of_resignation' => $survey->date_of_resignation?->format('Y-m-d') ?? $survey->last_working_date?->format('Y-m-d') ?? '—',
                                 'tenure' => $survey->tenureYears() ?? '—',
                                 'submitted_at' => $survey->submitted_at?->format('Y-m-d H:i') ?? '—',
+                                'declaration' => $survey->declaration_accepted
+                                    ? 'Accepted · '.($survey->declaration_accepted_at?->format('Y-m-d H:i') ?? '—')
+                                    : 'N/A (system generated)',
                                 'is_system' => true,
                                 'overall_satisfaction' => $survey->overallSatisfaction(),
                                 'pdf_url' => route('admin.surveys.pdf', $survey),
@@ -287,6 +302,7 @@
                         <th>ACCESS LINK &amp; PASSWORD</th>
                         <th>Expires</th>
                         <th>Sent</th>
+                        <th>Declaration</th>
                         <th style="text-align:right;">Actions</th>
                     </tr>
                 </thead>
@@ -340,6 +356,14 @@
                                 @endif
                             </td>
                             <td style="font-size:12px;color:var(--text-muted)">{{ $survey->created_at->format('Y-m-d') }}</td>
+                            <td style="font-size:12px;color:var(--text-muted)">
+                                @if($survey->declaration_accepted)
+                                    <span class="badge badge-success">✔ Accepted</span><br>
+                                    <span style="font-size:11px">{{ $survey->declaration_accepted_at?->format('Y-m-d H:i') }}</span>
+                                @else
+                                    <span class="badge badge-muted">Not accepted</span>
+                                @endif
+                            </td>
                             <td style="text-align:right;">
                                 <div style="display:inline-flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;">
                                     @if($survey->status === 'pending')
@@ -365,7 +389,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" style="text-align:center;color:var(--text-muted);padding:50px">
+                            <td colspan="8" style="text-align:center;color:var(--text-muted);padding:50px">
                                 No pending exit interview invitations found.
                             </td>
                         </tr>
@@ -520,6 +544,10 @@
                     <div>
                         <div style="color:#64748b; font-size:11px; font-weight:600;">Recorded Date</div>
                         <div id="modalRecordedAt" style="font-weight:600; color:#0f172a;"></div>
+                    </div>
+                    <div>
+                        <div style="color:#64748b; font-size:11px; font-weight:600;">Declaration</div>
+                        <div id="modalDeclaration" style="font-weight:600; color:#0f172a;"></div>
                     </div>
                 </div>
             </div>
@@ -761,6 +789,7 @@ function openSurveyQuickView(btn) {
     document.getElementById('modalDateResigned').textContent = survey.date_of_resignation || '—';
     document.getElementById('modalTenure').textContent = survey.tenure || '—';
     document.getElementById('modalRecordedAt').textContent = survey.submitted_at || '—';
+    document.getElementById('modalDeclaration').textContent = survey.declaration || '—';
 
     // Source badge
     const badge = document.getElementById('modalSourceBadge');
